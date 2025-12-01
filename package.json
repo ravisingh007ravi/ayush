@@ -1,17 +1,26 @@
 {
-  "name": "bmw",
+  "name": "ayush",
   "version": "1.0.0",
   "description": "",
   "main": "index.js",
   "type": "module",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
-    "start":"npx nodemon src/index.js",
-    "dev":"npx nodemon src/index.js"
+    "start": "npx nodemon src/index.js",
+    "dev": "npx nodemon src/index.js"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/ravisingh007ravi/ayush.git"
   },
   "author": "",
   "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/ravisingh007ravi/ayush/issues"
+  },
+  "homepage": "https://github.com/ravisingh007ravi/ayush#readme",
   "dependencies": {
+    "chalk": "^5.6.2",
     "dotenv": "^17.2.3",
     "express": "^5.1.0",
     "mongoose": "^9.0.0",
