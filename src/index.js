@@ -14,7 +14,7 @@ mongoose.connect(process.env.MongoDBUtrl)
     .then(() => console.log('Database is connected'))
     .catch((err) => console.log(err.message))
 
-app.use('/', route)
+app.use('/api', route)
 
 
 app.listen(PORT, () => console.log('Server is Running Port = ', PORT))

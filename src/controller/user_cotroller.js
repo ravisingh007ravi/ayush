@@ -1,29 +1,28 @@
 
-
-export const create_user =(req,res)=>{
-    try{
+import { user_model } from '../model/user_model.js'
+export const create_user = async (req, res) => {
+    try {
         const data = req.body
 
-        res.status(201).send({status:true,message :`Welcome ${data.name}`})
+        const { name, email, password } = data
+        if (!name) { return res.status(400).send({ status: false, message: "Please provide Name!" }) }
+        if (!email) { return res.status(400).send({ status: false, message: "Please provide email!" }) }
+        if (!password) { return res.status(400).send({ status: false, message: "Please provide Password!" }) }
+
+        const DB = await user_model.create(data)
+
+        return res.status(200).send({ status: true, data: DB })
     }
-    catch(err){
-        res.status(500).send({status:false,msg:err.message})
-    }
+    catch (err) { return res.status(500).send({ status: false, message: err.message }) }
 }
 
-export const get_all_user =(req,res)=>{
-    try{
-       const data = [
-        {name:"ayush"},
-        {name:"ayush"},
-        {name:"ayush"},
-        {name:"ayush"},
-        {name:"ayush"},
-       ]
+export const get_all_user = async (req, res) => {
+    try {
 
-        res.status(200).send({status:true,message :`get Successfully`,data:data})
+        const DB = await user_model.findOne()
+
+        res.status(200).send({ status: true, data: DB })
     }
-    catch(err){
-        res.status(500).send({status:false,msg:err.message})
-    }
+    catch (err) { return res.status(500).send({ status: false, message: err.message }) }
 }
+
