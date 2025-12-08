@@ -4,6 +4,6 @@ const routes = express.Router()
 
 
 
-routes.get('/create_user', create_user)
+routes.post('/create_user', create_user)
 
 export default routes

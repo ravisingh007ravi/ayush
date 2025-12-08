@@ -1,11 +1,12 @@
 import user_model from '../model/user_model.js'
+import bcrypt from 'bcrypt'
 
 export const create_user = async (req, res) => {
     try {
         const data = req.body
 
         const { name, email, password } = data
-
+        
         const nameRe = /^[A-Za-z ]{2,50}$/;
         const emailRe = /^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[A-Za-z]{2,}$/;
         const passRe = /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[@$!%*?&])[A-Za-z\d@$!%*?& ]{8,}$/;
@@ -20,7 +21,11 @@ export const create_user = async (req, res) => {
         if (!password) return res.status(400).send({ status: false, msg: "password is required" })
         if (!passRe.test(password)) return res.status(400).send({ status: false, msg: "Invalid Password" })
 
-        const DB = await user_model.create(data)
+        const bcryptPassword = await bcrypt.hash(password, 10)
+        data.password = bcryptPassword
+
+        const DB =  await user_model.create(data)
+
         return res.status(201).send({ status: true, msg: "SucessFull Create User", DB })
     }
     catch (err) { return res.status(500).send({ status: false, msg: err.message }) }
