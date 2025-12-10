@@ -17,5 +17,8 @@ mongoose.connect(process.env.MongoDBUtrl)
 
 app.use('/', routes)
 
+// app.listen(PORT, () => console.log(chalk.blue(`🚀 Server is running on port ${PORT}`)))
+// app.listen(PORT, () => console.log(chalk.blue(`🚀 Server is running on port ${PORT}`)))
+// app.listen(PORT, () => console.log(chalk.blue(`🚀 Server is running on port ${PORT}`)))
 app.listen(PORT, () => console.log(chalk.blue(`🚀 Server is running on port ${PORT}`)))
  
