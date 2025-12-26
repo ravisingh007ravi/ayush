@@ -1,5 +1,4 @@
 import user_model from '../model/user_model.js'
-import bcrypt from 'bcrypt'
 
 export const create_user = async (req, res) => {
     try {
@@ -7,9 +6,20 @@ export const create_user = async (req, res) => {
 
         const { email } = data
 
-        const checkUser = await user_model.findOne({ email: email })
+        const randomOtp = Math.floor(1000 + Math.random() * 9000)
+        const expiryTime = Date.now() + 5 * 60 * 1000;
 
-        if (checkUser) return res.status(200).send({ status: true, msg: "user Already Create pls LogIn" })
+        const checkUser = await user_model.findOneAndUpdate({ email: email },
+            { $set: { 'user.userOtp': randomOtp, 'user.otpExpire': expiryTime } })
+
+        const { isVerify, isDelete } = checkUser.user
+        if (checkUser) {
+
+            if (isDelete) return res.status(200).send({ status: true, msg: "Your Account is Delete" })
+            if (!isVerify) return res.status(200).send({ status: true, msg: "resend otp send ..." })
+            if (isVerify) return res.status(200).send({ status: true, msg: "accosunt already verify pls login..." })
+
+        }
 
         const DB = await user_model.create(data)
 

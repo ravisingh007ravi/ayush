@@ -9,7 +9,6 @@ export const validwmail = (email) => {
 }
 export const validpassword = (pass) => {
     const passRe = /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[@$!%*?&])[A-Za-z\d@$!%*?& ]{8,}$/;
-    console.log(pass)
     return passRe.test(pass)
 
 }

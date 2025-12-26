@@ -14,9 +14,16 @@ const userSchema = new mongoose.Schema({
         type: String, trim: true, required: [true, 'Password is Required'],
         validate: [validpassword, 'Invalid Password give one UpperCase, one LowerCase, one Number and one Special Character']
     },
+    user: {
+        isDelete: { type: Boolean, default: false },
+        otpExpire: { type: Number, default: 0 },
+        isVerify: { type: Boolean, default: false },
+        userOtp: { type: Number, default: null, trim: true },
+    },
+
 })
 
-userSchema.pre('save', async function (next) {
+userSchema.pre('save', async function () {
     this.password = await bcrypt.hash(this.password, 10)
 })
 
