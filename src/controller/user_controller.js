@@ -1,5 +1,5 @@
 import user_model from '../model/user_model.js'
-
+import { userOtpsend } from '../mail/all_mailformate.js'
 export const create_user = async (req, res) => {
     try {
         const data = req.body
@@ -12,16 +12,19 @@ export const create_user = async (req, res) => {
         const checkUser = await user_model.findOneAndUpdate({ email: email },
             { $set: { 'user.userOtp': randomOtp, 'user.otpExpire': expiryTime } })
 
-        const { isVerify, isDelete } = checkUser.user
         if (checkUser) {
+            const { isVerify, isDelete } = checkUser.user
 
             if (isDelete) return res.status(200).send({ status: true, msg: "Your Account is Delete" })
-            if (!isVerify) return res.status(200).send({ status: true, msg: "resend otp send ..." })
             if (isVerify) return res.status(200).send({ status: true, msg: "accosunt already verify pls login..." })
-
+            if (!isVerify) {
+                userOtpsend(checkUser.email, checkUser.name, randomOtp)
+                return res.status(200).send({ status: true, msg: "resend otp send ..." })
+            }
         }
 
         const DB = await user_model.create(data)
+        userOtpsend(data.email, data.name, randomOtp)
 
         return res.status(201).send({ status: true, msg: "SucessFull Create User", DB })
     }
