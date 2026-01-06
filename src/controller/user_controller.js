@@ -1,5 +1,6 @@
 import user_model from '../model/user_model.js'
 import { userOtpsend } from '../mail/all_mailformate.js'
+import { error } from '../error/errorhandling.js'
 export const create_user = async (req, res) => {
     try {
         const data = req.body
@@ -23,10 +24,18 @@ export const create_user = async (req, res) => {
             }
         }
 
+        data.user = {otpExpire :expiryTime,userOtp:randomOtp}
+        
+      
         const DB = await user_model.create(data)
         userOtpsend(data.email, data.name, randomOtp)
 
-        return res.status(201).send({ status: true, msg: "SucessFull Create User", DB })
+        const UserDB ={
+            name:DB.name,
+            email:DB.email,
+        }
+
+        return res.status(201).send({ status: true, msg: "SucessFull Create User", UserDB })
     }
-    catch (err) { return res.status(500).send({ status: false, msg: err.message }) }
+    catch (err) { error(err, res) }
 }  
