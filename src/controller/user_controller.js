@@ -1,6 +1,11 @@
 import user_model from '../model/user_model.js'
 import { userOtpsend } from '../mail/all_mailformate.js'
 import { error } from '../error/errorhandling.js'
+import bcrypt from 'bcrypt'
+import jwt from 'jsonwebtoken'
+import dotenv from 'dotenv'
+dotenv.config()
+
 export const create_user = async (req, res) => {
     try {
         const data = req.body
@@ -65,6 +70,34 @@ export const user_verify_otp = async (req, res) => {
 
         return res.status(200).json({ success: true, message: "Account verified successfully. You may now login." });
 
+    }
+    catch (err) { return error(err, res); }
+};
+
+
+export const user_login = async (req, res) => {
+    try {
+
+        const { email, password } = req.body
+
+        if (!email) return res.status(400).send({ status: false, msg: "Email is Required" })
+        if (!password) return res.status(400).send({ status: false, msg: "Password is Required" })
+
+        const checkUser = await user_model.findOne({ email: email, 'user.isDelete': false })
+        if (!checkUser) return res.status(404).send({ status: false, msg: "User not found Pls Sign Up Account" })
+
+        if (!(checkUser.user.isVerify)) return res.status(400).send({ status: false, msg: "Account not Verify pls Verify Otp" })
+        const comparePass = await bcrypt.compare(password, checkUser.password)
+
+        if (!comparePass) return res.status(400).send({ status: false, msg: "Wrong Password" })
+
+        const token = await jwt.sign({ id: checkUser._id }, process.env.UserJWT, { expiresIn: '1d' })
+        const DB = {
+            name: checkUser.name,
+            email: checkUser.email,
+            id: checkUser._id,
+        }
+        res.status(200).send({ status: true, msg: "Login Successfull", token, DB })
     }
     catch (err) { return error(err, res); }
 };
